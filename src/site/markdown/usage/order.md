@@ -2,14 +2,15 @@
 
 Once you have your account set up, you are ready to order certificates.
 
-Use your `Account` object to order the certificate, by using the `orderCertificate()` method. It requires a collection of domain names to be ordered. You can optionally give your desired `notBefore` and `notAfter` dates for the generated certificate, but it is at the discretion of the CA to use (or ignore) these values.
+Use your `Account` object to order the certificate, by using the `newOrder()` method. It returns an OrderBuilder object that helps you to collect the parameters of the order. You can give one or more domain names. Optionally you can also give your desired `notBefore` and `notAfter` dates for the generated certificate, but it is at the discretion of the CA to use (or ignore) these values.
 
 ```java
 Account account = ... // your Account object
 
-Order order = account.orderCertificate(
-    Arrays.of("example.org", "www.example.org", "m.example.org"),
-    null, null);
+Order order = account.newOrder()
+        .domains("example.org", "www.example.org", "m.example.org")
+        .notAfter(Instant.now().plus(Duration.ofDays(20L)))
+        .create();
 ```
 
 The `Order` resource contains a collection of `Authorization`s that can be read from the `getAuthorizations()` method. You must process _all of them_ in order to get the certificate.
